@@ -44,7 +44,58 @@ btnU, btnD, btnC - buttons to adjust volume up (btnU), volume down (btnD), and r
 
 led - output LEDs to indicate the current volume level (volume_level is mapped to the number of active LEDs).
 
-### DAC
+Process Summary:
+1. Clock and Reset Handling:
+
+The system waits for a rising edge on clk_50MHz.
+
+Resets the system with reset_int when reset_done is '0' and initializes btn_ready for button press detection.
+
+2. Button Handling:
+
+The btnU, btnD, and btnC buttons adjust the volume_level. The led displays the volume_level by lighting corresponding LEDs.
+
+Each button press increments or decrements the volume (up to a max of 16), and btnC resets it to the default value (8).
+
+3. Audio Input Scaling:
+
+The incoming ADC data is pre-scaled based on the INPUT_ATTENUATION factor.
+
+If the first switch is on, the input is filtered using a low-pass filter with historical sample values averages
+
+4. Noise Gate:
+
+If the second switch is on, the audio signal is passed through a noise gate.
+
+If the sample is below a noise threshold (NOISE_THRESHOLD), it is attenuated to zero otherwise, it passes through with possible slater caling.
+
+5. Volume Adjustment:
+
+Based on volume_level, the audio signal undergoes volume attenuation. Each level applies a different amount of attenuation.
+
+6. Effect Processing:
+
+Overdrive: If sw(2) is on, the signal is boosted, and overdrive effects are applied with a threshold to clip the signal.
+
+Underdrive: If sw(4) is on, the signal undergoes signal attenuation to try and reduce the audios gain.
+
+If no effect is applied, the signal is left unchanged.
+
+Delay Effect:
+
+If sw(3) is on, a delay effect is applied using a delay buffer (delay_buffer), with feedback applied to create an echo effect.
+
+The delay length and feedback amount are controlled by constants (DELAY_LENGTH, DELAY_FB_AMOUNT) (DELAY_FB_AMOUNT essentially the offset)
+
+8. Final Output:
+
+After processing, the final output signal is either the processed signal (processed_L_data) or the delayed signal (final_output).
+
+DAC and ADC Component Integration:
+
+The processed output is fed to the DAC component (dac_i renamed because of project errors that couldn't be explained caused by dac_if) for conversion to analog signals.
+
+The ADC component (adc_if) captures the incoming audio data, which is processed and used throughout the design.
 
 ## 1. Create a new RTL project guitar_pedal in Vivado Quick Start
 
