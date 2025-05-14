@@ -121,3 +121,16 @@ Click 'Generate Bitstream'
 Click 'Open Hardware Manager' and click 'Open Target' then 'Auto Connect'
 
 Click 'Program Device' then xc7a100t_0 to download siren.bit to the Nexys A7-100T board
+
+
+
+
+# Process Summary
+
+The process began with us researching project topics and settinling on an effects pedal.
+We then began experimenting with how we would get in the audio input, and we realized the PMOD would work fine for that.
+We mostly then worked together messing around tweaking values around trying to create effects while working through issues.
+James - ADC processing
+Daniel - Final mixing and DAC output
+Effects were a joint effort of trial and error getting what we could working, and trying to fix any weird unexplained behaviors.
+
